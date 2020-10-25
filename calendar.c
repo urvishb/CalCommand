@@ -1,11 +1,17 @@
 // These changes are from collaborator's side
-//the second time i am changing something as a contributor 24th oct
+// the second time i am changing something as a contributor 24th oct, Part 1 implemented (Linux calCommand)
+// Third Update; Part 2 implemented, calendar navigation possible now (25th oct)
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <conio.h>
 
-int is_leap(int yr);
+int getkey();
+int is_leap (int yr);
+void printCal (char *, int);
+void printMenu();
 
 int main()
 {
@@ -23,19 +29,142 @@ int main()
                              "oct", 
                              "nov", 
                              "dec"};
-            
-	printf("Please Enter the first 3 letters of any Month (Ex - Nov for November) : ");
+
+    printf("Please Enter the first 3 letters of any Month (Ex - Nov for November) : ");
     scanf("%s", month);
 
     printf ("\nPlease enter the corresponding year = ");
 	scanf("%d", &year);
 
-	int total_year = abs(year - 1900);
+    for (int i = 0 ; i < 12 ; i++)
+    {
+        if (strcmpi(month, allMonths[i]) == 0)
+        {
+            currm = i;
+            break;
+        }
+    }
+
+    printCal(month, year);
+    printMenu();
+
+    int endFlag = 0, key;
+
+    while(endFlag == 0)
+    {
+        key = getkey();
+
+        if (key == 27)
+        {
+            endFlag = 1;
+            printf("\n\n\t>>> Closing Calendar <<<\n\n");
+            break;
+        }
+
+        if (key == 72)
+        {
+            // up arrow key
+            system("cls");
+            year ++;
+            printCal(allMonths[currm], year);
+            printMenu();
+        }
+
+        else if (key == 80)
+        {
+            // down arrow key
+            system("cls");
+            year --;
+
+            printCal(allMonths[currm], year);
+            printMenu();
+        }
+
+        else if (key == 75)
+        {
+            // left arrow key
+            system("cls");
+
+            currm --;
+            if (currm < 0)
+            {
+                currm = 11;
+                year--;
+                printCal (allMonths[currm], year);
+                printMenu();
+            }
+            else
+            {
+                printCal(allMonths[currm], year);
+                printMenu();
+            }
+        }
+
+        else if (key == 77)
+        {
+            // right arrow key
+            system("cls");
+
+            currm ++;
+            if (currm > 11)
+            {
+                currm = 0;
+                year++;
+                printCal (allMonths[currm], year);
+                printMenu();
+            }
+
+            else
+            {
+                printCal(allMonths[currm], year);
+                printMenu();
+            }
+        }
+    }
+
+    return 0;	
+}
+
+
+int is_leap(int yr)
+{
+    int leap;
+    if((yr % 400 == 0) || ((yr % 4 == 0) && (yr % 100 != 0)))
+    {
+        leap = 1;
+        return leap;
+    }
+
+    else
+    {
+        leap = 0;
+        return leap;
+    }
+
+}
+
+void printCal (char * mah, int sal)
+{
+    int currm;
+    char allMonths[12][4] = {"jan",
+                             "feb",
+                             "mar", 
+                             "apr", 
+                             "may", 
+                             "jun", 
+                             "jul", 
+                             "aug", 
+                             "sep", 
+                             "oct", 
+                             "nov", 
+                             "dec"};
+
+	int total_year = abs(sal - 1900);
     int leap_count = 0;
 
-    if(year > 1900)
+    if(sal > 1900)
     {
-        for (int i = 1900 ; i < year ; i++)
+        for (int i = 1900 ; i < sal ; i++)
         {
             if(is_leap(i) == 1)
             {
@@ -46,7 +175,7 @@ int main()
 
     else
     {
-        for (int j = year ; j <= 1900 ; j++)
+        for (int j = sal ; j <= 1900 ; j++)
         { 
             if(is_leap(j) == 1)
             {
@@ -61,9 +190,9 @@ int main()
 
     int yrpoint = 0;
 
-    if(year >= 1900)
+    if(sal >= 1900)
     {
-        while(strcmpi(allMonths[yrpoint], month) != 0)
+        while(strcmpi(allMonths[yrpoint], mah) != 0)
         {
             if(yrpoint == 0 || yrpoint == 2 || yrpoint == 4 || yrpoint == 6 || yrpoint == 7 || yrpoint == 9 || yrpoint == 11)
             {
@@ -79,7 +208,7 @@ int main()
 
             else
             {
-                if (is_leap(year) == 1)
+                if (is_leap(sal) == 1)
                 {
                     //printf("\nThis month had/has/will have 29 days\n\n");
                     total_days += 29;
@@ -97,7 +226,7 @@ int main()
 
     else
     {
-        while(strcmpi(allMonths[yrpoint], month) != 0)
+        while(strcmpi(allMonths[yrpoint], mah) != 0)
         {
             if(yrpoint == 0 || yrpoint == 2 || yrpoint == 4 || yrpoint == 6 || yrpoint == 7 || yrpoint == 9 || yrpoint == 11)
             {
@@ -113,7 +242,7 @@ int main()
 
             else
             {
-                if (is_leap(year) == 1)
+                if (is_leap(sal) == 1)
                 {
                     //printf("\nThis month had/has/will have 29 days\n\n");
                     total_days -= 29;
@@ -132,7 +261,7 @@ int main()
 
     int week_day;
 
-    if(year == 1900 && (strcmpi(allMonths[0], month) == 0))
+    if(sal == 1900 && (strcmpi(allMonths[0], mah) == 0))
     {
         week_day = 0;
     } 
@@ -143,12 +272,12 @@ int main()
     }
     
 
-    if(year >= 1900)
+    if(sal >= 1900)
     {
         week_day = week_day + 0;
     }
 
-    else if (year < 1900)
+    else if (sal < 1900)
     {
         week_day = 7 - week_day; 
     }
@@ -173,7 +302,7 @@ int main()
 
     for(currm = 0 ; currm < 12 ; currm++)
     {
-        if (strcmpi(month, allMonths[currm]) == 0)
+        if (strcmpi(mah, allMonths[currm]) == 0)
         {
             if(currm == 0 || currm == 2 || currm == 4 || currm == 6 || currm == 7 || currm == 9 || currm == 11)
             {
@@ -189,7 +318,7 @@ int main()
 
             else
             {
-                if (is_leap(year) == 1)
+                if (is_leap(sal) == 1)
                 {
                     // printf("\nThis month had/has/will have 29 days\n\n");
                     days_in_mnth = 29;
@@ -206,7 +335,7 @@ int main()
         }
     }
 
-    printf("\n\t\t  %s %d\n\n", month, year);
+    printf("\n\t\t  %s %d\n\n", mah, sal);
 
 
     // print days mon   tue   wed  ...
@@ -237,23 +366,28 @@ int main()
         date++;
     }
 
-    return 0;	
+
+}
+
+int getkey ()
+{
+    int ch;
+    ch = getch();
+    if (ch == 0)
+    {
+        ch = getch();
+        return ch;
+    }
+
+    return ch;
 }
 
 
-int is_leap(int yr)
+void printMenu()
 {
-    int leap;
-    if((yr % 400 == 0) || ((yr % 4 == 0) && (yr % 100 != 0)))
-    {
-        leap = 1;
-        return leap;
-    }
-
-    else
-    {
-        leap = 0;
-        return leap;
-    }
-
+    printf("\n\n\n\nPress %c (Up arrow key) : For Next Year\n", 30);
+    printf("\nPress %c (Down arrow key) : For Previous Year\n", 31);
+    printf("\nPress %c (Right arrow key) : For Next Month\n", 16);
+    printf("\nPress %c (Left arrow key) : For Previous Month\n", 17);
+    printf("\n\tPress Esc key to Quit");
 }
